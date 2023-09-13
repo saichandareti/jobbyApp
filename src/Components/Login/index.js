@@ -3,7 +3,12 @@ import Cookies from 'js-cookie'
 import './index.css'
 
 class Login extends Component {
-  state = {nameInput: '', passwordInput: ''}
+  state = {
+    nameInput: '',
+    passwordInput: '',
+    errorOccured: false,
+    errorDetails: '',
+  }
 
   OnChangeNameInput = event => {
     this.setState({nameInput: event.target.value})
@@ -13,37 +18,53 @@ class Login extends Component {
     this.setState({passwordInput: event.target.value})
   }
 
-  OnLogin = async event => {
+  OnSubmitSuccess = jwtToken => {
+    this.setState({nameInput: '', passwordInput: ''})
+    Cookies.set('jwt_token', jwtToken, {expires: 30})
+
+    console.log(jwtToken)
+    const {history} = this.props
+    history.replace('/')
+  }
+
+  OnSubmitFailure = errorMsg => {
+    this.setState({errorOccured: true, errorDetails: errorMsg})
+  }
+
+  LoginCreds = async event => {
     event.preventDefault()
 
     const {nameInput, passwordInput} = this.state
 
-    const body = {nameInput, passwordInput}
     const url = 'https://apis.ccbp.in/login'
+    const userDetails = {username: nameInput, password: passwordInput}
+
     const options = {
       method: 'POST',
-      body: JSON.stringify(body),
+      body: JSON.stringify(userDetails),
     }
 
     const response = await fetch(url, options)
     const jsonData = await response.json()
 
     if (response.ok === true) {
-      this.onSubmitSuccess(jsonData.jwt_token)
-      console.log('OK')
+      this.OnSubmitSuccess(jsonData.jwt_token)
     } else {
-      console.log('Not OK')
-      this.onSubmitFailure(jsonData.error_msg)
+      this.OnSubmitFailure(jsonData.error_msg)
     }
-
-    console.log(jsonData)
   }
 
   render() {
-    const {nameInput, passwordInput} = this.state
+    const {nameInput, passwordInput, errorDetails, errorOccured} = this.state
+
+    const displayErrorMessage = errorOccured ? (
+      <p className="error-msg">*{errorDetails}</p>
+    ) : (
+      <p className="error-msg"> </p>
+    )
 
     return (
-      <form className="login-bg-container" onSubmit={this.OnLogin}>
+      <form className="login-bg-container" onSubmit={this.LoginCreds}>
         <div className="login-container">
           <img
             src="https://assets.ccbp.in/frontend/react-js/logo-img.png "
@@ -79,6 +100,7 @@ class Login extends Component {
           <button className="login-button" type="submit">
             Login
           </button>
+          {displayErrorMessage}
         </div>
       </form>
     )

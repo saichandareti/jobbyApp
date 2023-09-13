@@ -1,0 +1,39 @@
+.header-bg-container {
+  height: 70px;
+  background-color: #272727;
+  font-family: 'Roboto';
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 50px;
+  padding-right: 50px;
+}
+.logo-image {
+  height: 36px;
+  cursor: pointer;
+  outline: none;
+}
+.header-home-con {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 90px;
+  margin-left: 30px;
+}
+.header-home {
+  color: #f8fafc;
+  font-weight: 500;
+  font-size: 14px;
+}
+.logout-button {
+  background-color: #4f46e5;
+  border: 0px solid;
+  color: #ffffff;
+  padding: 8px;
+  padding-left: 30px;
+  padding-right: 30px;
+  border-radius: 4px;
+  font-size: 10px;
+  cursor: pointer;
+  outline: none;
+}
